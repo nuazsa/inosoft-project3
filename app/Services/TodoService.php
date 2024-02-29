@@ -62,15 +62,7 @@ class TodoService
 	 */
 	public function deleteTodo(string $todoId)
 	{
-		$existTask = $this->getById($todoId);
-
-		if (!$existTask) {
-			return response()->json([
-				"message" => "Task " . $todoId . " tidak ada"
-			], 401);
-		}
-
-		$id = $this->todoRepository->deleteById($todoId);
-		return $id;
+		$this->todoRepository->deleteById($todoId);
+		
 	}
 }

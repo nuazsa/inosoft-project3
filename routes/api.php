@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TodoController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,15 +16,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/show_todo', [TodoController::class, 'showTodo']);
-Route::post('/create_todo', [TodoController::class, 'createTodo']);
-Route::patch('/update_todo', [TodoController::class, 'updateTodo']);
-Route::delete('/delete_todo', [TodoController::class, 'deleteTodo']);
+Route::group([
+    'prefix' => 'auth'
+], function () {
+    Route::post('register', [UserController::class, 'register']);
+    Route::group([
+        'middleware' => 'api'
+    ], function () {
+        Route::post('login', [AuthController::class, 'login']);
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('me', [AuthController::class, 'me']);
 
-/**
-* ex: fitur tambahan
-*/
-Route::post('/assign_todo', [TodoController::class, 'assignTodo']);
-Route::delete('/unassign_todo', [TodoController::class, 'unassignTodo']);
-Route::post('/create_subtodo', [TodoController::class, 'createSubTodo']);
-Route::delete('/delete_subtodo', [TodoController::class, 'deleteSubTodo']);
+        /**
+         * ex: fitur
+         */
+        Route::get('/show_todo', [TodoController::class, 'showTodo']);
+        Route::post('/create_todo', [TodoController::class, 'createTodo']);
+        Route::patch('/update_todo', [TodoController::class, 'updateTodo']);
+        Route::delete('/delete_todo', [TodoController::class, 'deleteTodo']);
+    });
+});

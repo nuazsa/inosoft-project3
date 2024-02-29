@@ -43,11 +43,8 @@ class TodoRepository
             'title' => $data['title'],
             'description' => $data['description'],
             'assigned' => null,
-            'subtodo' => [],
             'created_at' => time()
         ];
-
-        ksort($dataSaved);
 
         $id = $this->todo->save($dataSaved);
         return $id;
@@ -65,10 +62,9 @@ class TodoRepository
     /**
      * Untuk manghapus todo
      */
-	public function deleteById(string $id)
+	public function deleteById(string $id): void
 	{
 		$id = $this->todo->deleteQuery(['_id' => $id]);
-        return $id;
 	}
 
 }

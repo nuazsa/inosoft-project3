@@ -11,6 +11,7 @@ class TodoController extends Controller
 
     public function __construct()
     {
+        $this->middleware('auth:api');
         $this->todoService = new TodoService();
     }
 
@@ -80,14 +81,19 @@ class TodoController extends Controller
             'todo_id' => 'required|string',
         ]);
 
-        $todoId = $this->post('todo_id');
-        $id = $this->todoService->deleteTodo($todoId);
+        $todoId = $request->post('todo_id');
 
-        $todo = $this->todoService->getById($id);
+        $existTodo = $this->todoService->getById($todoId);
+		if (!$existTodo) {
+			return response()->json([
+				"message" => "Todo " . $todoId . " tidak ada"
+			], 401);
+		}
 
-        return response()->json([
-            'massage' => 'Succes Delete Todo',
-            'data' => $todo
-        ]);
+		$this->todoService->deleteTodo($todoId);
+
+		return response()->json([
+			'message'=> 'Success delete todo '.$todoId,
+		], 200);
     }
 }
